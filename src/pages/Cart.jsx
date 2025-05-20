@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Pages() {
+function Cart() {
   return (
     <div>
       
@@ -8,4 +8,4 @@ function Pages() {
   )
 }
 
-export default Pages
+export default Cart
