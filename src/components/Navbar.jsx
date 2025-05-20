@@ -25,9 +25,9 @@ function Navbar() {
              <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 hidden' />
             </NavLink>
       </ul>
-
+ 
         <div className='flex item-center gap-5'>
-           <img src={assets.search_icon} className='w-5 cursor-pointer' alt="" />
+           <img src={assets.search_icon} className='w-5 cursor-pointer' alt="" /> 
 
            <div className='group relative'>
              <img className='w-5 cursor-pointer' src={assets.profile_icon} alt="" />
