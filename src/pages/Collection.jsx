@@ -17,7 +17,7 @@ function Collection() {
     setCategory((prev) =>
       prev.includes(value)
         ? prev.filter((item) => item !== value)
-        : [...prev, value]
+        : [...prev, value] 
     );
   };
 

@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { products } from "../assets/assets";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export const ShopContext = createContext();
 
@@ -10,79 +11,80 @@ const ShopContextProvider = (props) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
+  const navigate = useNavigate();
 
-  const addToCart = async (itemId, size) => {
+  // Load cart from localStorage on initial render
+  useEffect(() => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+      setCartItems(JSON.parse(savedCart));
+    }
+  }, []);
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+  }, [cartItems]);
+
+  const addToCart = (itemId, size) => {
     if (!size) {
       toast.error("Select Product Size");
       return;
     }
 
-    let cartData = structuredClone(cartItems);
-
-    if (cartData[itemId]) {
-      if (cartData[itemId][size]) {
-        cartData[itemId][size] += 1;
+    setCartItems(prev => {
+      const cartData = structuredClone(prev);
+      
+      if (cartData[itemId]) {
+        cartData[itemId][size] = (cartData[itemId][size] || 0) + 1;
       } else {
-        cartData[itemId][size] = 1;
+        cartData[itemId] = { [size]: 1 };
       }
-    } else {
-      cartData[itemId] = {};
-      cartData[itemId][size] = 1;
-    }
-    setCartItems(cartData);
+      
+      return cartData;
+    });
+    
     toast.success("Item added to cart");
   };
 
   const getCartCount = () => {
-    let totalCount = 0;
-    for (const itemId in cartItems) {
-      for (const size in cartItems[itemId]) {
-        const quantity = cartItems[itemId][size];
-        if (quantity > 0) {
-          totalCount += quantity;
-        }
-      }
-    }
-    return totalCount;
+    return Object.values(cartItems).reduce((total, sizes) => {
+      return total + Object.values(sizes).reduce((sum, qty) => sum + qty, 0);
+    }, 0);
   };
 
   const updateQuantity = (itemId, size, quantity) => {
-    let cartData = structuredClone(cartItems);
-
-    if (quantity === 0) {
-      // Remove the size entry
-      delete cartData[itemId][size];
-
-      // If no sizes left for this item, remove the item completely
-      if (Object.keys(cartData[itemId]).length === 0) {
-        delete cartData[itemId];
+    setCartItems(prev => {
+      const cartData = structuredClone(prev);
+      
+      if (quantity === 0) {
+        if (cartData[itemId]) {
+          delete cartData[itemId][size];
+          if (Object.keys(cartData[itemId]).length === 0) {
+            delete cartData[itemId];
+          }
+        }
+      } else {
+        if (!cartData[itemId]) {
+          cartData[itemId] = {};
+        }
+        cartData[itemId][size] = quantity;
       }
-    } else {
-      if (!cartData[itemId]) {
-        cartData[itemId] = {};
-      }
-      cartData[itemId][size] = quantity;
-    }
-
-    setCartItems(cartData);
+      
+      return cartData;
+    });
   };
 
   const getTotalCartAmount = () => {
-    let totalAmount = 0;
-    for (const itemId in cartItems) {
-      for (const size in cartItems[itemId]) {
-        const product = products.find((p) => p._id === itemId);
-        if (product) {
-          totalAmount += product.price * cartItems[itemId][size];
-        }
-      }
-    }
-    return totalAmount;
+    return Object.entries(cartItems).reduce((total, [itemId, sizes]) => {
+      const product = products.find(p => p._id === itemId);
+      if (!product) return total;
+      
+      return total + Object.entries(sizes).reduce((sum, [size, qty]) => {
+        return sum + (product.price * qty);
+      }, 0);
+    }, 0);
   };
-
-  useEffect(() => {
-    console.log("Cart updated:", cartItems);
-  }, [cartItems]);
 
   const value = {
     products,
@@ -97,6 +99,7 @@ const ShopContextProvider = (props) => {
     getCartCount,
     updateQuantity,
     getTotalCartAmount,
+    navigate,
   };
 
   return (

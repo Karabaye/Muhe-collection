@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import { assets } from "../assets/assets";
+import CartTotal from "../components/CartTotal";
 
 function Cart() {
-  const { products, currency, cartItems, updateQuantity, getTotalCartAmount } =
-    useContext(ShopContext);
-
+  const { products, currency, cartItems, updateQuantity } = useContext(ShopContext);
+  const navigate = useNavigate(); // Added useNavigate hook
   const [cartData, setCartData] = useState([]);
 
   useEffect(() => {
@@ -141,13 +142,21 @@ function Cart() {
               );
             })}
           </div>
-
-          {/* Checkout section remains the same */}
-          <div className="border-t pt-6">
-            {/* ... existing checkout code ... */}
-          </div>
         </div>
       )}
+      <div className="flex justify-end my-20">
+        <div className="w-full sm:w-[450px]">
+          <CartTotal />
+          <div className="w-full text-end">
+            <button 
+              onClick={() => navigate('/place-order')} 
+              className="bg-black text-white text-sm my-8 px-8 py-3"
+            >
+              PROCEED TO CHECKOUT
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
