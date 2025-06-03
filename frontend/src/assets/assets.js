@@ -53,7 +53,6 @@ import p_img49 from './p_img49.png'
 import p_img50 from './p_img50.png'
 import p_img51 from './p_img51.png'
 import p_img52 from './p_img52.png'
-import p_img53 from './jenn.jpeg'
 
 
 import logo from './logo.png'
@@ -104,18 +103,6 @@ export const products = [
         price: 100,
         image: [p_img1],
         category: "Women",
-        subCategory: "Topwear",
-        sizes: ["S", "M", "L"],
-        date: 1716634345448,
-        bestseller: true
-    },
-     {
-        _id: "a123",
-        name: "Kid Round Neck Cotton Top",
-        description: "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment.",
-        price: 100,
-        image: [p_img53],
-        category: "Kids",
         subCategory: "Topwear",
         sizes: ["S", "M", "L"],
         date: 1716634345448,
