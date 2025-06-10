@@ -12,7 +12,7 @@ export const backendUrl = import.meta.env.VITE_BACKEND_UR
 
 const App = () => {
 
-  const [token,setToken] = useState('')
+  const [token,setToken] = useState('') 
 
 
   return (
