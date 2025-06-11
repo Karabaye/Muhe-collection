@@ -55,23 +55,24 @@ const Add = ({token}) => {
       image3 && formData.append("image3", image3)
       image4 && formData.append("image4", image4)
 
-      const response = await axios.post(`${backendUrl}/api/product/add`, formData, {
+      const response = await axios.post(backendUrl+ "/api/product/add", formData, {
         headers: {
           token 
         }
-
-        
       })
-
-      console.log(response.data)
-      toast.success("Product added successfully!")
-      resetForm()
+      
+      if (response.data.success) {
+        toast.success(response.data.message)
+        // Redirect to list page
+        window.location.href = '/list' // Change '/list' to your actual route
+      } else {
+        toast.error(response.data.message)
+      }
+      
     } catch (error) {
-      console.error("Error adding product:", error)
-      toast.error(error.response?.data?.message || "Failed to add product")
-    } finally {
-      setIsLoading(false)
-    }
+      console.log(error);
+      toast.error(error.response);
+    } 
   }
 
   return (

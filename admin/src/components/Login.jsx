@@ -14,8 +14,9 @@ const Login = ({setToken}) => {
       const response = await axios.post(backendUrl + '/api/user/admin',{email,password})
       if (response.data.success) {
         setToken(response.data.token)
+        localStorage.setItem('adminToken', response.data.token) // Save token for persistence
       } else {
-        toast.error(response.data.massage)
+        toast.error(response.data.message) // Fix typo: massage -> message
       }
     } catch (error) {
       console.log(error);
